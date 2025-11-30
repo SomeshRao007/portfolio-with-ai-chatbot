@@ -1,13 +1,11 @@
 import React from 'react';
 import type { Skill, SkillCategory, Certification, TimelineEvent, LearningItem, Project, Testimonial } from './types';
 
-// --- PERSONALIZATION SECTION ---
-// This file now exports a single INITIAL_DATA object that can be loaded into state.
 
 const PERSONAL_INFO = {
   name: "Somesh Rao Coka",
   title: "DevOps & AI Engineer",
-  profileImageUrl: "/images/me.jpeg", // Updated from index.html Hero image
+  profileImageUrl: "/images/me.jpeg", 
   bio: `I am a DevOps Engineer at Cloudpepper and an AWS Certified Solutions Architect. With a Master’s degree focused on AI-driven Kubernetes autoscaling, I combine deep research capabilities with practical operational experience. I specialize in automating complex infrastructures—recently managing a 3,000-server migration and cutting deployment build time by 40%. I am passionate about building self-healing, scalable systems using Terraform, Ansible, and Docker. My goal is to leverage AI and cloud technologies to create efficient, resilient solutions that drive business success.`,
   socialLinks: [
     { name: 'LinkedIn', url: 'https://www.linkedin.com/in/someshrao007', icon: '/images/social/linkedin-svgrepo-com-min.png' },
@@ -117,6 +115,12 @@ const CERTIFICATIONS_DATA: Certification[] = [
     issuer: 'Google Cloud',
     imageUrl: '/images/gcp.png',
     link: 'https://www.credly.com/badges/04bbcd9e-1081-4c09-85d6-66f0daa79cd2/public_url',
+  },
+  {
+    title: 'Certified Kubernetes Administrator (preparing)',
+    issuer: 'Linux Foundation',
+    imageUrl: '/images/cka.png',
+    link: '',
   },
   {
     title: 'Research Presentation',
@@ -305,8 +309,6 @@ export const INITIAL_DATA = {
     testimonials: TESTIMONIALS_DATA,
 }
 
-// --- CHATBOT CONFIGURATION ---
-// Functions to generate dynamic strings for the chatbot
 
 export const createPortfolioDataString = (data: typeof INITIAL_DATA) => {
   const { personalInfo, skills, certifications, projects } = data;

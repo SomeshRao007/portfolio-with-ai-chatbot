@@ -3,7 +3,8 @@ import { GoogleGenAI, LiveServerMessage, Modality, Blob } from '@google/genai';
 import type { ChatMessage } from '../types';
 import { MicrophoneIcon, XMarkIcon, ChatBubbleOvalLeftEllipsisIcon, PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
-// --- Audio Helper Functions (as per @google/genai guidelines) ---
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute in milliseconds
+const MAX_REQUESTS = 5; // Max requests per window 
 
 function decode(base64: string) {
   const binaryString = atob(base64);
@@ -72,6 +73,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
   const [history, setHistory] = useState<ChatMessage[]>([initialMessage]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  const requestTimestampsRef = useRef<number[]>([]);
   const sessionPromiseRef = useRef<Promise<any> | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const inputAudioContextRef = useRef<AudioContext | null>(null);
@@ -120,7 +122,28 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
     setStatus('Idle. Press the mic to start.');
   }, []);
 
+  const checkRateLimit = useCallback(() => {
+    const now = Date.now();
+    // Filter out timestamps that are older than the 1-minute window
+    const recentRequests = requestTimestampsRef.current.filter(
+      (timestamp) => now - timestamp < RATE_LIMIT_WINDOW
+    );
+
+    if (recentRequests.length >= MAX_REQUESTS) {
+      return false; // Limit reached
+    }
+
+    // Add current timestamp and update ref
+    requestTimestampsRef.current = [...recentRequests, now];
+    return true; // Request allowed
+  }, []);
+
   const startConversation = useCallback(async () => {
+    if (!checkRateLimit()) {
+        setHistory(prev => [...prev, { role: 'model', text: "⚠️ Rate limit reached." }]);
+        return;
+    }
+
     setIsLive(true);
     setStatus('Connecting...');
     
@@ -226,7 +249,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
       setStatus("Error: Couldn't access microphone.");
       setIsLive(false);
     }
-  }, [systemInstruction, stopConversation]);
+  }, [systemInstruction, stopConversation, checkRateLimit]);
   
   const handleTextSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -247,6 +270,16 @@ const Chatbot: React.FC<ChatbotProps> = ({ systemInstruction }) => {
                 systemInstruction: systemInstruction
             }
         });
+
+        if (!checkRateLimit()) {
+        const limitMessage: ChatMessage = { 
+            role: 'model', 
+            text: "⚠️ Rate limit reached. Please wait a moment before sending more messages." 
+        };
+        setHistory(prev => [...prev, limitMessage]);
+        setTextInput(''); // Optional: clear input or leave it for them to try again
+        return;
+    }
 
         const modelResponse = response.text;
         setHistory(prev => [...prev, { role: 'model', text: modelResponse }]);
