@@ -3,11 +3,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils'; // Ensure you have this utility or use clsx/tailwind-merge
+import { cn } from '@/lib/utils';
 
 const SQRT_5000 = Math.sqrt(5000);
 
-// Define the shape of a single item for this component
 export interface StaggerTestimonialItem {
   tempId: string | number;
   testimonial: string;
@@ -20,15 +19,22 @@ interface TestimonialCardProps {
   testimonial: StaggerTestimonialItem;
   handleMove: (steps: number) => void;
   cardSize: number;
+  isMobile: boolean; // Add isMobile prop
 }
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ 
   position, 
   testimonial, 
   handleMove, 
-  cardSize 
+  cardSize,
+  isMobile
 }) => {
   const isCenter = position === 0;
+  
+  // Calculate spread: On mobile, keep them tight (stacked). On desktop, spread them out.
+  const spreadFactor = isMobile ? 20 : (cardSize / 1.5); 
+  const scaleFactor = isMobile && !isCenter ? 0.9 : 1;
+  const opacityFactor = isMobile && !isCenter ? 0.6 : 1;
 
   return (
     <div
@@ -36,21 +42,22 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
       className={cn(
         "absolute left-1/2 top-1/2 cursor-pointer border-2 p-8 transition-all duration-500 ease-in-out bg-card",
         isCenter 
-          ? "z-10 bg-blue-600 text-white border-blue-600 shadow-xl" // Adapted colors to match your theme
+          ? "z-10 bg-blue-600 text-white border-blue-600 shadow-xl" 
           : "z-0 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400"
       )}
       style={{
         width: cardSize,
         height: cardSize,
+        opacity: opacityFactor,
         // The unique geometric shape
         clipPath: `polygon(50px 0%, calc(100% - 50px) 0%, 100% 50px, 100% 100%, calc(100% - 50px) 100%, 50px 100%, 0 100%, 0 0)`,
         transform: `
           translate(-50%, -50%) 
-          translateX(${(cardSize / 1.5) * position}px)
+          translateX(${spreadFactor * position}px)
           translateY(${isCenter ? -65 : position % 2 ? 15 : -15}px)
+          scale(${scaleFactor})
           rotate(${isCenter ? 0 : position % 2 ? 2.5 : -2.5}deg)
         `,
-        // shadow logic
         boxShadow: isCenter ? "0px 8px 0px 4px rgba(0,0,0,0.1)" : "none"
       }}
     >
@@ -62,14 +69,16 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
       
       {/* Image / Avatar */}
       <img
-        src={testimonial.imgSrc || "/assets/images/flag.jpeg"} // Fallback to your flag image if none provided
+        src={testimonial.imgSrc || "/assets/images/flag.jpeg"} 
         alt={testimonial.by}
         className="mb-4 h-14 w-14 rounded-full bg-slate-100 object-cover shadow-sm"
       />
 
       {/* Quote */}
       <h3 className={cn(
-        "text-base sm:text-lg font-medium leading-relaxed",
+        "font-medium leading-relaxed overflow-hidden",
+        // Adjust font size for mobile vs desktop
+        isMobile ? "text-sm line-clamp-6" : "text-lg line-clamp-5",
         isCenter ? "text-white" : "text-slate-900 dark:text-white"
       )}>
         "{testimonial.testimonial}"
@@ -92,10 +101,9 @@ interface StaggerTestimonialsProps {
 
 export const StaggerTestimonials: React.FC<StaggerTestimonialsProps> = ({ items }) => {
   const [cardSize, setCardSize] = useState(365);
-  // Initialize state with the passed items
+  const [isMobile, setIsMobile] = useState(false);
   const [testimonialsList, setTestimonialsList] = useState(items);
 
-  // Update list if props change
   useEffect(() => {
     setTestimonialsList(items);
   }, [items]);
@@ -120,8 +128,13 @@ export const StaggerTestimonials: React.FC<StaggerTestimonialsProps> = ({ items 
 
   useEffect(() => {
     const updateSize = () => {
-      const { matches } = window.matchMedia("(min-width: 640px)");
-      setCardSize(matches ? 365 : 290);
+      const width = window.innerWidth;
+      const isMobileView = width < 640;
+      setIsMobile(isMobileView);
+      
+      // On mobile: take 90% of screen width, but max out at 300px
+      // On desktop: fixed 365px
+      setCardSize(isMobileView ? Math.min(width * 0.9, 300) : 365);
     };
 
     updateSize();
@@ -132,12 +145,18 @@ export const StaggerTestimonials: React.FC<StaggerTestimonialsProps> = ({ items 
   return (
     <div
       className="relative w-full overflow-hidden"
-      style={{ height: 600 }}
+      // Reduce height on mobile to avoid excessive whitespace
+      style={{ height: isMobile ? 450 : 600 }}
     >
       {testimonialsList.map((testimonial, index) => {
         const position = testimonialsList.length % 2
           ? index - (testimonialsList.length + 1) / 2
           : index - testimonialsList.length / 2;
+          
+        // Optimization: Don't render cards that are too far away on mobile
+        // to prevent weird overflow/glitching
+        if(isMobile && Math.abs(position) > 2) return null;
+
         return (
           <TestimonialCard
             key={testimonial.tempId}
@@ -145,10 +164,16 @@ export const StaggerTestimonials: React.FC<StaggerTestimonialsProps> = ({ items 
             handleMove={handleMove}
             position={position}
             cardSize={cardSize}
+            isMobile={isMobile}
           />
         );
       })}
-      <div className="absolute bottom-10 left-1/2 flex -translate-x-1/2 gap-4 z-20">
+      
+      {/* Navigation Buttons - Adjusted position for mobile */}
+      <div className={cn(
+        "absolute flex -translate-x-1/2 gap-4 z-20 left-1/2",
+        isMobile ? "bottom-4" : "bottom-10"
+      )}>
         <button
           onClick={() => handleMove(-1)}
           className={cn(
