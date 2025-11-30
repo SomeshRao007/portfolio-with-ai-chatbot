@@ -121,7 +121,7 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
 
           {/* Right Side: Contact Form */}
           <div className="bg-background/95 backdrop-blur-md p-6 md:p-8 rounded-2xl shadow-2xl border border-border">
-            <h2 className="text-2xl font-bold text-foreground mb-6">Let's talk! 👋</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-6">Drop me a message! 👋</h2>
 
             {/* Email & Socials */}
             <div className="mb-6">

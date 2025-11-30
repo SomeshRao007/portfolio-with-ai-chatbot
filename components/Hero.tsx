@@ -43,9 +43,9 @@ const Hero: React.FC<HeroProps> = ({ data }) => {
           titleComponent={
             <>
               <h1 className="text-4xl font-semibold text-black dark:text-white">
-                Unleash the power of <br />
+                Redefining the Workflow of <br />
                 <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
-                  Creative Automation
+                  Tomorrow
                 </span>
               </h1>
             </>
@@ -69,11 +69,6 @@ const Hero: React.FC<HeroProps> = ({ data }) => {
             {data.bio}
           </p>
           <div className="mt-8 flex justify-center md:justify-start items-center space-x-4">
-            {data.socialLinks.map((link) => (
-              <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" aria-label={link.name} className="hover:opacity-75 transition-opacity"> 
-                <img src={link.icon} alt={link.name} className="w-8 h-8" />
-              </a>
-            ))}
             <MovingButton
               href={data.cvUrl}
               download="cv.pdf" 
