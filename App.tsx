@@ -12,7 +12,8 @@ import Projects from './components/Projects';
 import LearningList from './components/LearningList';
 import Contact from './components/Contact';
 import Testimonials from './components/Testimonials';
-import { INITIAL_DATA, createChatbotSystemInstruction } from './constants';
+import { createChatbotSystemInstruction } from './constants';
+import { usePortfolioData } from './hooks/usePortfolioData';
 import { ThemeProvider } from './hooks/useTheme';
 import { WebGLShader } from "./components/ui/web-gl-shader";
 import { LiquidButton } from './components/ui/liquid-glass-button';
@@ -44,13 +45,24 @@ const IntroScreen: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
 
 const App: React.FC = () => {
   const [showIntro, setShowIntro] = useState(true);
-  const portfolioData = INITIAL_DATA;
+  const { data: portfolioData, isLoading } = usePortfolioData();
 
   const chatbotInstruction = useMemo(() => createChatbotSystemInstruction(portfolioData), [portfolioData]);
 
   if (showIntro) {
     return <IntroScreen onEnter={() => setShowIntro(false)} />;
   }
+
+if (!portfolioData.personalInfo || !portfolioData.skills) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <div className="text-center">
+        <p className="text-red-500 font-semibold">Failed to load data from Strapi</p>
+        <p className="text-slate-500 text-sm mt-2">Check browser console for details</p>
+      </div>
+    </div>
+  );
+}
 
   return (
     <ThemeProvider>

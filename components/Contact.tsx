@@ -76,7 +76,7 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
     'Brand Strategy & Consulting', 'Other'
   ];
 
-  const backgroundImageSrc = "/wallpaperflare-cropped.jpg";
+  const backgroundImageSrc = "/wallpaperflare2.jpg";
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-background">
