@@ -226,6 +226,11 @@ export const INITIAL_DATA = {
 // Functions to generate dynamic strings for the chatbot
 
 export const createPortfolioDataString = (data: typeof INITIAL_DATA) => {
+
+  if (!data?.personalInfo || !data?.skills || !data?.certifications || !data?.projects) {
+    return '';
+  }
+
   const { personalInfo, skills, certifications, projects } = data;
   
   const skillsString = skills.map(category => 
@@ -250,11 +255,13 @@ ${projects.map(project => `- **Project**: "${project.title}"\n  - **Description*
 # Contact & Socials
 - **GitHub**: ${personalInfo.socialLinks.find(l => l.name === 'GitHub')?.url}
 - **LinkedIn**: ${personalInfo.socialLinks.find(l => l.name === 'LinkedIn')?.url}
-- **Twitter**: ${personalInfo.socialLinks.find(l => l.name === 'Twitter')?.url}
 `;
 }
 
 export const createChatbotSystemInstruction = (data: typeof INITIAL_DATA) => {
+  if (!data?.personalInfo) {
+    return 'You are a helpful assistant. Data is still loading.';
+  }
   const PORTFOLIO_DATA = createPortfolioDataString(data);
   return `
 You are Jarvis, a witty, slightly sarcastic, but incredibly helpful AI assistant for ${data.personalInfo.name}.
