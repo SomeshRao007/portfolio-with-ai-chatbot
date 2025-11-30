@@ -75,7 +75,13 @@ const SKILLS_DATA: SkillCategory[] = [
             { name: 'HTML5', icon: '/assets/icons/tiger.png' },
             { name: 'CSS3', icon: '/assets/icons/tiger.png' },
             { name: 'PostgreSQL', icon: '/assets/icons/tiger.png' },
-            { name: 'Bash', icon: '/assets/icons/tiger.png' }
+            { name: 'Bash', icon: '/assets/icons/tiger.png' },
+            { name: 'TypeScript', icon: '/assets/icons/tiger.png' },
+            { name: 'JavaScript', icon: '/assets/icons/tiger.png' },
+            { name: 'Python', icon: '/assets/icons/tiger.png' },
+            { name: 'HTML5', icon: '/assets/icons/tiger.png' },
+            { name: 'CSS3', icon: '/assets/icons/tiger.png' },
+            { name: 'PostgreSQL', icon: '/assets/icons/tiger.png' },
         ]
     }
 ];
