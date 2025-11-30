@@ -47,7 +47,7 @@ const Certifications: React.FC<CertificationsProps> = ({ data }) => {
   return (
     <section className="py-20 md:py-24 overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <div className="text-right mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50">Licenses & Certifications</h2>
           <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">My commitment to continuous learning and professional development.</p>
         </div>
