@@ -71,9 +71,9 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
   };
 
   const projectTypeOptions = [
-    'Website', 'Mobile App', 'Web App', 'E-Commerce',
-    'Brand Identity', '3D & Animation', 'Social Media Marketing',
-    'Brand Strategy & Consulting', 'Other'
+    'Odoo Automation', 'DevOps Automation', 'CI/CD Pipelines',
+    'Website', 'Web App', 'AI Automation','E-Commerce payments',
+    'Cloud Strategy & Consulting', 'Other'
   ];
 
   const backgroundImageSrc = "/wallpaperflare.jpg";
