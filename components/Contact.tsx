@@ -4,7 +4,7 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
 import { Checkbox } from './ui/checkbox';
-import { INITIAL_DATA } from '@/constants'; // Adjust path if constants is in different folder
+import { INITIAL_DATA } from '@/constants'; 
 
 type ContactProps = {
   formspreeEndpoint: string;
@@ -76,7 +76,7 @@ const Contact: React.FC<ContactProps> = ({ formspreeEndpoint }) => {
     'Brand Strategy & Consulting', 'Other'
   ];
 
-  const backgroundImageSrc = "/wallpaperflare-cropped.jpg";
+  const backgroundImageSrc = "/wallpaperflare.jpg";
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-background">

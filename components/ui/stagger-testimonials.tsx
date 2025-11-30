@@ -7,10 +7,13 @@ import { cn } from '@/lib/utils';
 
 const SQRT_5000 = Math.sqrt(5000);
 
+// 1. Update Interface to accept separate fields
 export interface StaggerTestimonialItem {
   tempId: string | number;
   testimonial: string;
-  by: string;
+  author: string;   // Changed from 'by'
+  role: string;     // New field
+  company: string;  // New field
   imgSrc?: string;
 }
 
@@ -19,7 +22,7 @@ interface TestimonialCardProps {
   testimonial: StaggerTestimonialItem;
   handleMove: (steps: number) => void;
   cardSize: number;
-  isMobile: boolean; // Add isMobile prop
+  isMobile: boolean;
 }
 
 const TestimonialCard: React.FC<TestimonialCardProps> = ({ 
@@ -31,16 +34,19 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
 }) => {
   const isCenter = position === 0;
   
-  // Calculate spread: On mobile, keep them tight (stacked). On desktop, spread them out.
   const spreadFactor = isMobile ? 20 : (cardSize / 1.5); 
   const scaleFactor = isMobile && !isCenter ? 0.9 : 1;
   const opacityFactor = isMobile && !isCenter ? 0.6 : 1;
+
+  // dynamic text colors based on card position
+  const titleColor = isCenter ? "text-white" : "text-slate-900 dark:text-white";
+  const subTextColor = isCenter ? "text-blue-100" : "text-slate-500 dark:text-slate-400";
 
   return (
     <div
       onClick={() => handleMove(position)}
       className={cn(
-        "absolute left-1/2 top-1/2 cursor-pointer border-2 p-8 transition-all duration-500 ease-in-out bg-card",
+        "absolute left-1/2 top-1/2 cursor-pointer border-2 p-8 transition-all duration-500 ease-in-out bg-card flex flex-col justify-center", // Added flex col
         isCenter 
           ? "z-10 bg-blue-600 text-white border-blue-600 shadow-xl" 
           : "z-0 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400"
@@ -49,7 +55,6 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
         width: cardSize,
         height: cardSize,
         opacity: opacityFactor,
-        // The unique geometric shape
         clipPath: `polygon(50px 0%, calc(100% - 50px) 0%, 100% 50px, 100% 100%, calc(100% - 50px) 100%, 50px 100%, 0 100%, 0 0)`,
         transform: `
           translate(-50%, -50%) 
@@ -67,30 +72,37 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
         style={{ right: -2, top: 48, width: SQRT_5000, height: 2 }}
       />
       
-      {/* Image / Avatar */}
-      <img
-        src={testimonial.imgSrc || "/assets/images/flag.jpeg"} 
-        alt={testimonial.by}
-        className="mb-4 h-14 w-14 rounded-full bg-slate-100 object-cover shadow-sm"
-      />
+      {/* 2. New Header Layout: Image + Details Side-by-Side */}
+      <div className="flex items-center gap-4 mb-6">
+        <img
+          src={testimonial.imgSrc} 
+          alt={testimonial.author}
+          className="h-14 w-14 rounded-full bg-slate-100 object-cover shadow-sm shrink-0"
+        />
+        
+        <div className="flex flex-col text-left">
+          <span className={cn("font-bold text-lg leading-tight", titleColor)}>
+            {testimonial.author}
+          </span>
+          <span className={cn("text-xs uppercase tracking-wide font-semibold mt-1", subTextColor)}>
+            {testimonial.role}
+          </span>
+          <span className={cn("text-xs", subTextColor)}>
+            {testimonial.company}
+          </span>
+        </div>
+      </div>
 
       {/* Quote */}
       <h3 className={cn(
         "font-medium leading-relaxed overflow-hidden",
-        // Adjust font size for mobile vs desktop
         isMobile ? "text-sm line-clamp-6" : "text-lg line-clamp-5",
-        isCenter ? "text-white" : "text-slate-900 dark:text-white"
+        titleColor
       )}>
         "{testimonial.testimonial}"
       </h3>
-
-      {/* Author */}
-      <p className={cn(
-        "absolute bottom-8 left-8 right-8 mt-2 text-sm italic",
-        isCenter ? "text-blue-100" : "text-slate-500 dark:text-slate-400"
-      )}>
-        - {testimonial.by}
-      </p>
+      
+      {/* Removed the absolute positioned author at bottom since it's now at the top */}
     </div>
   );
 };
@@ -131,9 +143,6 @@ export const StaggerTestimonials: React.FC<StaggerTestimonialsProps> = ({ items 
       const width = window.innerWidth;
       const isMobileView = width < 640;
       setIsMobile(isMobileView);
-      
-      // On mobile: take 90% of screen width, but max out at 300px
-      // On desktop: fixed 365px
       setCardSize(isMobileView ? Math.min(width * 0.9, 300) : 365);
     };
 
@@ -145,7 +154,6 @@ export const StaggerTestimonials: React.FC<StaggerTestimonialsProps> = ({ items 
   return (
     <div
       className="relative w-full overflow-hidden"
-      // Reduce height on mobile to avoid excessive whitespace
       style={{ height: isMobile ? 450 : 600 }}
     >
       {testimonialsList.map((testimonial, index) => {
@@ -153,8 +161,6 @@ export const StaggerTestimonials: React.FC<StaggerTestimonialsProps> = ({ items 
           ? index - (testimonialsList.length + 1) / 2
           : index - testimonialsList.length / 2;
           
-        // Optimization: Don't render cards that are too far away on mobile
-        // to prevent weird overflow/glitching
         if(isMobile && Math.abs(position) > 2) return null;
 
         return (
@@ -169,7 +175,6 @@ export const StaggerTestimonials: React.FC<StaggerTestimonialsProps> = ({ items 
         );
       })}
       
-      {/* Navigation Buttons - Adjusted position for mobile */}
       <div className={cn(
         "absolute flex -translate-x-1/2 gap-4 z-20 left-1/2",
         isMobile ? "bottom-4" : "bottom-10"

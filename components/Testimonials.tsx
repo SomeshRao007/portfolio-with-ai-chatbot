@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Testimonial } from '../types';
-import { StaggerTestimonials } from './ui/stagger-testimonials'; // Adjust path if needed
+import { StaggerTestimonials } from './ui/stagger-testimonials'; 
 
 type TestimonialsProps = {
   data: Testimonial[];
@@ -8,13 +8,13 @@ type TestimonialsProps = {
 
 const Testimonials: React.FC<TestimonialsProps> = ({ data }) => {
   
-  // 1. Transform your constants data to the format StaggerTestimonials needs
-  // 2. We concat the data to itself to ensure there are enough cards for the animation to look good
   const animationData = data.concat(data).concat(data).map((t, index) => ({
     tempId: index,
     testimonial: t.quote,
-    by: `${t.author}, ${t.company}`,
-    imgSrc: '/assets/images/flag.jpeg' // Using your flag image as default avatar since none exist in constants
+    author: t.author,
+    role: t.role,
+    company: t.company,
+    imgSrc: t.imgSrc
   }));
 
   return (
@@ -28,7 +28,6 @@ const Testimonials: React.FC<TestimonialsProps> = ({ data }) => {
           </p>
         </div>
 
-        {/* The New Animation Component */}
         <div className="w-full">
            <StaggerTestimonials items={animationData} />
         </div>
