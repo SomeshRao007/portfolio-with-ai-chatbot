@@ -1,0 +1,7 @@
+{
+  "name": "Interactive Portfolio with AI Chatbot",
+  "description": "A modern, responsive portfolio website featuring skills, certifications, and an AI-powered chatbot to answer questions about my work and experience.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
