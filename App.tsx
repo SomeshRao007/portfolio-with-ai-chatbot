@@ -16,6 +16,8 @@ import { INITIAL_DATA, createChatbotSystemInstruction } from './constants';
 import { ThemeProvider } from './hooks/useTheme';
 import { WebGLShader } from "./components/ui/web-gl-shader";
 import { LiquidButton } from './components/ui/liquid-glass-button';
+import { SpeedInsights } from "@vercel/speed-insights/next"
+
 
 const IntroScreen: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
   return (
@@ -37,6 +39,7 @@ const IntroScreen: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
                 <LiquidButton className="text-white border border-white/30 rounded-full font-bold tracking-wide" size={'xl'} onClick={onEnter}>Let's Go</LiquidButton> 
             </div> 
         </main>
+        <SpeedInsights/>
       </div>
     </div>
   );
@@ -86,6 +89,7 @@ const App: React.FC = () => {
         <Footer name={portfolioData.personalInfo.name} />
         <Chatbot systemInstruction={chatbotInstruction} />
       </div>
+      <SpeedInsights/>
     </ThemeProvider>
   );
 };
