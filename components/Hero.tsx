@@ -120,7 +120,7 @@ const Hero: React.FC<HeroProps> = ({ data }) => {
     "Scale More, Spend Less",
     "Optimize Cloud, Minimize Waste",
     "Slash Bills, Not Performance",
-    "Redefining the Workflow of Tomorrow"
+    "Redefining the Workflows of Tomorrow"
   ];
 
   return (
