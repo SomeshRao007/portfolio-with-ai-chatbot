@@ -16,7 +16,7 @@ import { INITIAL_DATA, createChatbotSystemInstruction } from './constants';
 import { ThemeProvider } from './hooks/useTheme';
 import { WebGLShader } from "./components/ui/web-gl-shader";
 import { LiquidButton } from './components/ui/liquid-glass-button';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/react"
 
 
 const IntroScreen: React.FC<{ onEnter: () => void }> = ({ onEnter }) => {
