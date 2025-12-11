@@ -207,6 +207,12 @@ const STATS_DATA = [
 
 const PROJECTS_DATA: Project[] = [
   {
+    title: 'Odoo Module Automation Pipeline',
+    description: 'Just update your code and with a single git push get your odoo modules with in multiple servers updated',
+    imageUrl: '/images/Odoo-Module-Automation.png',
+    githubUrl: 'https://github.com/SomeshRao007/Odoo_Module_Automation_Pipeline.git',
+  },
+  {
     title: 'Multimodal Agentic AI system (coding)',
     description: 'Multiple agents coomunicates with each other to solve a single problem efficiently.',
     imageUrl: '/images/multi-modal-ai.png',
